@@ -2,60 +2,61 @@ import React, { useEffect, useState } from 'react'
 import { data } from '../data'
 import SelectInput from './SelectInput'
 const Main = () => {
-    const [state, setState] = useState({ optionData: [],level:[""] })
+    const [state, setState] = useState({ optionData: [], tableData: [] })
 
-
+    // initial data 
     useEffect(() => {
         const category = []
         data.map(x => {
-            if (category.indexOf(x.primary_category) == -1) {
+            if (category.indexOf(x.primary_category) == -1)
                 category.push(x.primary_category)
-            }
         })
-        state.optionData.push([category])
+        state.optionData.push(category)
         setState({ ...state })
     }, [])
 
-
+    // Make Search for Table data
     const searchFor = (value, level, previousArr = data) => {
-
-        console.log(previousArr,value)
-        let CategoryArr = previousArr.filter(item =>item[level] == value)
-
-     
+        let CategoryArr = previousArr.filter(item => item[level] == value)
         return CategoryArr
     }
-    const secondSearch=(CategoryArr,level)=>{
-        (level == "primary_category") ? level = 'category_1' : level = 'category_' + (level + 1)
-    
-       let unique = []
-       CategoryArr.map(x => {
-             if (unique.indexOf(x[level]) == -1) {
-                 unique.push(x[level])
-             
-             }
-         })
-         return unique
+
+    // Make unique Options
+    const secondSearch = (CategoryArr, level) => {
+        (level == 0) ? level = 'category_1' : level = 'category_' + (level + 1)
+        let unique = []
+        CategoryArr.map(x => {
+            if (unique.indexOf(x[level]) == -1) {
+                unique.push(x[level])
+            }
+        })
+        return unique
     }
 
+    // On select press
     const onSelected = (value, level) => {
-        (level == 0) ? level = "primary_category" : level = 'category_' + level
-        state.tableData = searchFor(value, level)
-        state.optionData.push(secondSearch(state.tableData,level))
-        level++
-        
+        if(value=="-1")
+        return ''
+        let tmpLevel
+        (level == 0) ? tmpLevel = "primary_category" : tmpLevel = 'category_' + level
+        state.tableData = searchFor(value, tmpLevel)
+        if (state.optionData.length > level) {
+            state.optionData.splice(level + 1)
+            state.optionData[level + 1] = secondSearch(state.tableData, level)
+        }
+        else
+            state.optionData.push(secondSearch(state.tableData, level))
         setState({ ...state })
     }
-    console.log(state)
+    
     return (
         <>
             <div className="main">
                 <div className="container">
                     <h1>Products</h1>
                     {
-                        state.optionData[0]&&state.level.map((x,i)=><SelectInput onSelected={onSelected} options={state.optionData[i]} level={i} />)
+                        state.optionData && state.optionData.map((x, i) => <SelectInput key={x} onSelected={onSelected} options={x} level={i} />)
                     }
-                    
                     <button>
                         Save
                     </button>
@@ -69,7 +70,10 @@ const Main = () => {
                             </tr>
                         </thead>
                         <tbody>
-
+                            {
+                                state.tableData.map(x => <tr key={x.asin+x.img_source} ><td>{x.primary_category}</td><td>{x.category_1}</td>
+                                    <td>{x.category_2}</td><td>{x.category_3}</td></tr>)
+                            }
                         </tbody>
                     </table>
                 </div>
