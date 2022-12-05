@@ -6,13 +6,11 @@ const SelectInput = ({onSelected , options , level , value}) => {
     return <p>NO DATA FOUND</p>
  
     return (<>
-            <select name="" id="" onChange={(e)=>onSelected(e.target.value,level)}>
+            <select name="" id="" onChange={(e)=>onSelected(e.target.value,level)} defaultValue={value[level]}>
             <option key={"sda"} value="-1">--SELECT</option>
                 {
                     options&&options.map((category,i) => {
-                        return  (value[level]==category) 
-                        ? <option  key={level+i+category} value={category} selected>{category}</option>
-                        : <option  key={level+i+category} value={category}>{category}</option>})
+                        return   <option  key={level+i+category} value={category}>{category}</option>})
                 }
             </select>
         </>)
