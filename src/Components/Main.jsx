@@ -59,7 +59,7 @@ const Main = () => {
                     {
                         state.optionData && state.optionData.map((x, i) => <SelectInput key={x} onSelected={onSelected} options={x} level={i} value={state.selected}/>)
                     }
-                    <button id="btn1" onClick={()=>{localStorage.setItem("state",JSON.stringify(state));setState({...state,showTable:[...state.tableData]});console.log("state",state)}}>
+                    <button id="btn1" onClick={()=>{localStorage.setItem("state",JSON.stringify(state));setState({...state,showTable:[...state.tableData]})}}>
                         Save to Local Storage
                     </button>
                     <button onClick={()=>localStorage.setItem("state",JSON.stringify({ optionData: [], tableData: [],showTable:[],selected:[]}))}>
